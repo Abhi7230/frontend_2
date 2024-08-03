@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -29,18 +29,13 @@ const AddProblem = () => {
   const [outputDescription, setOutputDescription] = useState("");
   const [sampleCases, setSampleCases] = useState([{ sample_input: "", sample_output: "" }]);
   const [constraints, setConstraints] = useState("");
-  const [hints, setHints] = useState([{ hints: "" }]);
+  const [hints, setHints] = useState([""]);
   const [selectedTopics, setSelectedTopics] = useState([]);
-  const [lockedTestCases, setLockedTestCases] = useState([
-    { input: "", output: "" },
-  ]);
-  const [adminSolution, setAdminSolution] = useState({
-    code: "",
-    language: "",
-  });
+  const [lockedTestCases, setLockedTestCases] = useState([{ input: "", output: "" }]);
+  const [adminSolution, setAdminSolution] = useState({ code: "", language: "" });
   const [level, setLevel] = useState("");
 
-  const [allTopics, setAllTopics] = useState([
+  const allTopics = [
     "Arrays",
     "Strings",
     "Linked Lists",
@@ -55,16 +50,9 @@ const AddProblem = () => {
     "Backtracking",
     "Basic Math",
     "Input/Output",
-  ]);
-
-  const programmingLanguages = [
-    "Python",
-    "JavaScript",
-    "Java",
-    "C++",
-    "C",
   ];
 
+  const programmingLanguages = ["Python", "JavaScript", "Java", "C++", "C"];
   const difficultyLevels = ["Easy", "Medium", "Hard"];
 
   const toast = useToast();
@@ -74,16 +62,20 @@ const AddProblem = () => {
   };
 
   const handleRemoveSampleCase = (index) => {
-    const newSampleCases = sampleCases.filter((_, i) => i !== index);
-    setSampleCases(newSampleCases);
+    setSampleCases(sampleCases.filter((_, i) => i !== index));
   };
 
   const handleAddHint = () => {
-    setHints([...hints, { hints: "" }]);
+    setHints([...hints, ""]);
   };
 
   const handleRemoveHint = (index) => {
-    const newHints = hints.filter((_, i) => i !== index);
+    setHints(hints.filter((_, i) => i !== index));
+  };
+
+  const handleHintChange = (index, value) => {
+    const newHints = [...hints];
+    newHints[index] = value;
     setHints(newHints);
   };
 
@@ -92,8 +84,7 @@ const AddProblem = () => {
   };
 
   const handleRemoveLockedTestCase = (index) => {
-    const newLockedTestCases = lockedTestCases.filter((_, i) => i !== index);
-    setLockedTestCases(newLockedTestCases);
+    setLockedTestCases(lockedTestCases.filter((_, i) => i !== index));
   };
 
   const handleTopicSelect = (topic) => {
@@ -135,7 +126,7 @@ const AddProblem = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      await response.json();
       toast({
         title: "Problem added successfully",
         status: "success",
@@ -154,6 +145,7 @@ const AddProblem = () => {
   };
 
   const bgColor = useColorModeValue('white', 'gray.800');
+
   return (
     <Container maxW="container.xl" py={8}>
       <Box bg={bgColor} shadow="md" borderRadius="lg" p={6}>
@@ -257,12 +249,8 @@ const AddProblem = () => {
                 <HStack key={index} mt={2}>
                   <Input
                     placeholder="Hint"
-                    value={hint.hints}
-                    onChange={(e) => {
-                      const newHints = [...hints];
-                      newHints[index].hints = e.target.value;
-                      setHints(newHints);
-                    }}
+                    value={hint}
+                    onChange={(e) => handleHintChange(index, e.target.value)}
                   />
                   <IconButton
                     icon={<DeleteIcon />}
